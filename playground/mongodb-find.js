@@ -20,14 +20,14 @@ MongoClient.connect('mongodb://localhost:27017/TodoApp', (err, db) => {
 		console.log('Todos');
 
 	}, (err) => {
-		console.log('unable to find todos', err);
+		console.log('unable to find Users', err);
 	});
 
 	db.collection('Users').find({name: 'Mr. Bojangles'}).count().then((count) => {
 		console.log(`Users count: ${count}`)
 
 	}, (err) => {
-		console.log('unable to find todos', err);
+		console.log('unable to find Users', err);
 	});
 
 	// db.collection('Todos').find().count().then((count) => {
