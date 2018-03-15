@@ -19,15 +19,15 @@ var Todo = mongoose.model('Todo', {
 });
 
 
-var anotherTodo = new Todo({
-	text: 'Drop it like its hawt'
-});
+// var anotherTodo = new Todo({
+// 	text: 'Drop it like its hawt'
+// });
 
-anotherTodo.save().then((doc) => {
-	console.log(`Saved todo ${doc}`)
-}, (e) => {
-	console.log('Unable to save todo')
-});
+// anotherTodo.save().then((doc) => {
+// 	console.log(`Saved todo ${doc}`)
+// }, (e) => {
+// 	console.log('Unable to save todo')
+// });
 
 module.exports = {
 	Todo
