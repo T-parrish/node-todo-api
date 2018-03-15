@@ -45,7 +45,7 @@ app.get('/todos', (req, res) => {
 	Todo.find().then((todos) => {
 		res.send({todos})
 	}, (e) => {
-		res.status(400).send(e);
+		res.status(404).send(e);
 	});
 });
 
@@ -55,17 +55,17 @@ app.get('/todos/:id', (req, res) => {
 	var id = req.params.id;
 
 	if (!ObjectID.isValid(id)) {
-		res.status(400).send()
+		res.status(404).send()
 		return console.log(`${id} is not a valid id`)
 	}  
 	
 	Todo.findById(id).then((todo) => {
 		if (!todo) {
+			res.status(404).send()
 			return console.log('ID not found')
 		}
 		res.send({todo})
 		res.status(200).send()
-		console.log('Todo by id', todo);
 	}).catch((e) => console.log(e));
 	
 
