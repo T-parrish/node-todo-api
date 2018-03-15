@@ -24,20 +24,20 @@ app.post('/todos', (req, res) => {
 	});
 });
 
-app.post('/users', (req, res) => {
-	console.log(req.body);
+// app.post('/users', (req, res) => {
+// 	console.log(req.body);
 	
-	var user = new User({
-		name: req.body.name,
-		email: req.body.email
-	});
+// 	var user = new User({
+// 		name: req.body.name,
+// 		email: req.body.email
+// 	});
 
-	user.save().then((doc) => {
-		res.send(doc);
-	}, (e) => {
-		res.status(400).send(e);
-	});
-});
+// 	user.save().then((doc) => {
+// 		res.send(doc);
+// 	}, (e) => {
+// 		res.status(400).send(e);
+// 	});
+// });
 
 
 activePort = 3000;
@@ -45,3 +45,6 @@ activePort = 3000;
 app.listen(activePort, () => {
 	console.log(`server running on port ${activePort}`)
 });
+
+
+module.exports = {app};
