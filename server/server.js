@@ -7,7 +7,7 @@ var {mongoose} = require('./db/mongoose');
 var {Todo} = require('./models/todo');
 var {User} = require('./models/user');
 
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 3000;
 
 
 var app = express();
@@ -27,21 +27,6 @@ app.post('/todos', (req, res) => {
 		res.status(400).send(e);
 	});
 });
-
-// app.post('/users', (req, res) => {
-// 	console.log(req.body);
-	
-// 	var user = new User({
-// 		name: req.body.name,
-// 		email: req.body.email
-// 	});
-
-// 	user.save().then((doc) => {
-// 		res.send(doc);
-// 	}, (e) => {
-// 		res.status(400).send(e);
-// 	});
-// });
 
 app.get('/todos', (req, res) => {
 	Todo.find().then((todos) => {
