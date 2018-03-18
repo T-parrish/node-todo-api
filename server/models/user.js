@@ -58,19 +58,53 @@ UserSchema.methods.toJSON = function () {
 
 // don't use arrow functions because they don't bind a 'this' keyword
 // we need the 'this' keyword for our methods because the 'this' keyword
-// stores the individual document
+// instance methods call the individual document, so use lower case user
 UserSchema.methods.generateAuthToken = function () {
 	var user = this;
 	var access = 'auth';
-	var token = jwt.sign({_id: user._id.toHexString(), access}, 'abc123').toString();
+	// var token = jwt.sign({_id: user._id.toHexString(), access}, 'abc123').toString();
+	var token = jwt.sign({_id: user._id.toHexString(), access}, 'abc123');
 
-	user.tokens = user.tokens.concat([{access, token}]);
+
+	user.tokens = user.tokens.concat({access, token});
 
 	// in order to allow server.js to chain onto the promise, follow this syntax
 	// saves the info to the user model then returns the token value for server.js to chain
 	return user.save().then(() => {
 		return token;
 	});
+};
+
+// .statics turns it into a model method instead of an instance method
+// statics are model methods, and model method get called with the model as the 'this' binding
+// use upper case User for these
+UserSchema.statics.findByToken = function (token) {
+	var User = this;
+	var decoded;
+
+	try {
+		decoded = jwt.verify(token, 'abc123');
+		// used for debugging constant 401 errors
+		// console.log('successful decoding')
+	} catch (e) {
+		// used for debugging constant 401 errors
+		// console.log('failed at decoding')
+		
+		//  does same as code below
+		return Promise.reject();
+		
+		// return new Promise((resolve, reject) => {
+		// 	reject();
+		// });
+	}
+
+
+	return User.findOne({
+		'_id': decoded._id,
+		// gets into the nested token field
+		'tokens.token': token,
+		'tokens.access': 'auth'
+	})
 };
 
 var User = mongoose.model('User', UserSchema)
