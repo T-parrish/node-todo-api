@@ -241,27 +241,28 @@ describe('POST /users', () => {
 			});
 		});
 	
-	// it('should return validation errors if request invalid', (done) => {
+	it('should return validation errors if request invalid', (done) => {
 		
-	// 	request(app)
-	// 		.get(`/users/me`)
-	// 		.expect(401)
-	// 		.expect((res) => {
-	// 			expect(res.body).toEqual({});
-	// 		})
+		request(app)
+			.post(`/users`)
+			.send({
+				email: 'dillon',
+				password: '123'
+			})
+			.expect(400)
+			.end(done);
+	});
 
-	// 		.end(done);
-
-	// it('should not create user if email in use', (done) => {
+	it('should not create user if email in use', (done) => {
 		
-	// 	request(app)
-	// 		.get(`/users/me`)
-	// 		.expect(401)
-	// 		.expect((res) => {
-	// 			expect(res.body).toEqual({});
-	// 		})
-
-	// 		.end(done);
-	// });
+		request(app)
+			.post(`/users`)
+			.send({
+				email: users[0].email,
+				password: 'password123'
+			})
+			.expect(400)
+			.end(done);
+	});
 });
 
