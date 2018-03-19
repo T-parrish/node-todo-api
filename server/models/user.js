@@ -76,6 +76,15 @@ UserSchema.methods.generateAuthToken = function () {
 	});
 };
 
+UserSchema.methods.removeToken = function (token) {
+	var user = this;
+	return user.update({
+		$pull: {
+			tokens: {token}
+		}
+	});
+};
+
 // .statics turns it into a model method instead of an instance method
 // statics are model methods, and model method get called with the model as the 'this' binding
 // use upper case User for these
