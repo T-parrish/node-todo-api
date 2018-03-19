@@ -134,6 +134,7 @@ app.get('/users/me', authenticate, (req, res) => {
 
 app.post('/users/login', (req, res) => {
 	var body = _.pick(req.body, ['email', 'password']);
+	console.log('body variables passed successfully')
 
 	User.findByCredentials(body.email, body.password).then((user) => {
 		return user.generateAuthToken().then((token) => {
