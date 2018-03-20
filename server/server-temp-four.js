@@ -17,10 +17,11 @@ var app = express();
 
 app.use(bodyParser.json());
 
-app.post('/todos', authenticate, (req, res) => {
+app.post('/todos', (req, res) => {
+	console.log(req.body);
+	
 	var todo = new Todo({
-		text: req.body.text,
-		_creator: req.user._id
+		text: req.body.text
 	});
 
 	todo.save().then((doc) => {
@@ -30,17 +31,15 @@ app.post('/todos', authenticate, (req, res) => {
 	});
 });
 
-app.get('/todos', authenticate, (req, res) => {
-	Todo.find({
-		_creator: req.user._id
-	}).then((todos) => {
+app.get('/todos', (req, res) => {
+	Todo.find().then((todos) => {
 		res.send({todos})
 	}, (e) => {
 		res.status(404).send(e);
 	});
 });
 
-app.get('/todos/:id', authenticate, (req, res) => {
+app.get('/todos/:id', (req, res) => {
 	var id = req.params.id;
 
 	if (!ObjectID.isValid(id)) {
@@ -48,10 +47,7 @@ app.get('/todos/:id', authenticate, (req, res) => {
 		return console.log(`${id} is not a valid id`)
 	}  
 	
-	Todo.findOne({
-		_id: id,
-		_creator: req.user._id
-	}).then((todo) => {
+	Todo.findById(id).then((todo) => {
 		if (!todo) {
 			res.status(404).send()
 			return console.log('ID not found')
@@ -61,7 +57,7 @@ app.get('/todos/:id', authenticate, (req, res) => {
 	}).catch((e) => console.log(e));
 });
 
-app.delete('/todos/:id', authenticate, (req, res) => {
+app.delete('/todos/:id', (req, res) => {
 	var id = req.params.id;
 
 	if (!ObjectID.isValid(id)) {
@@ -69,10 +65,7 @@ app.delete('/todos/:id', authenticate, (req, res) => {
 		return console.log(`${id} is not a valid id`)
 	}  
 
-	Todo.findOneAndRemove({
-		_id: id,
-		_creator: req.user._id
-	}).then((todo) => {
+	Todo.findByIdAndRemove(id).then((todo) => {
 		if(!todo) {
 			res.status(404).send();
 			return console.log('no todo found with that ID');
@@ -84,7 +77,7 @@ app.delete('/todos/:id', authenticate, (req, res) => {
 	});
 });
 
-app.patch('/todos/:id', authenticate, (req, res) => {
+app.patch('/todos/:id', (req, res) => {
 	var id = req.params.id;
 	// only allows the text and completed fields to be modified by the endpoint
 	var body = _.pick(req.body, ['text', 'completed']);
@@ -101,10 +94,7 @@ app.patch('/todos/:id', authenticate, (req, res) => {
 	}
 
 	// new:true returns the new doc rather than the old one
-	Todo.findOneAndUpdate({
-		_id: id,
-		_creator: req.user._id
-	}, {$set: body}, {new:true}).then((todo) => {
+	Todo.findByIdAndUpdate(id, {$set: body}, {new:true}).then((todo) => {
 		if (!todo) {
 			return res.status(404).send();
 		}
