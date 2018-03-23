@@ -6,19 +6,8 @@ const bcrypt = require('bcryptjs')
 
 const _ = require('lodash');
 
-// // Example of data passed into user model
-// {
-// 	email: 'loopzoop@gmail.com'
-// 	// will be hashed in the database
-// 	password: 'shwiggidyshwiggidy'
-// 	tokens: [{
-// 		access: 'auth',
-// 		// long cryptographic string
-// 		token: 'asldfkjsfdkhzdlfialkkvjmnxczxcv'
-// 	}]
-// }
-
-// by using a schema over a model declaration you can create custom instance methods
+// By using a schema over a model declaration you 
+// can create custom instance / model methods
 var UserSchema = new mongoose.Schema({
 	email: {
 		type: String,
@@ -64,8 +53,8 @@ UserSchema.methods.generateAuthToken = function () {
 	var user = this;
 	var access = 'auth';
 	// var token = jwt.sign({_id: user._id.toHexString(), access}, <secret salt>);
+	// generates salted and hashed password string -> saves to token variable
 	var token = jwt.sign({_id: user._id.toHexString(), access}, process.env.JWT_SECRET);
-
 
 	user.tokens = user.tokens.concat({access, token});
 
@@ -95,18 +84,11 @@ UserSchema.statics.findByToken = function (token) {
 
 	try {
 		decoded = jwt.verify(token, process.env.JWT_SECRET);
-		// used for debugging constant 401 errors
-		// console.log('successful decoding')
+
 	} catch (e) {
-		// used for debugging constant 401 errors
-		// console.log('failed at decoding')
-		
-		//  does same as code below
+
 		return Promise.reject();
 		
-		// return new Promise((resolve, reject) => {
-		// 	reject();
-		// });
 	}
 
 
@@ -138,14 +120,10 @@ UserSchema.statics.findByCredentials = function (email, password) {
 	});
 };
 
-// bcrypt.compare(password, hashedPassword, (err, res) => {
-// 	console.log(res)
-// })
-
 UserSchema.pre('save', function (next) {
 	var user = this;
 
-	// only hashes if the password is changed - stops database from
+	// only hashes password if the user is changed - stops database from
 	// hashing passwords multiple times and locking people out
 	if (user.isModified('password')) {
 		bcrypt.genSalt(10, (err, salt) => {
@@ -161,6 +139,18 @@ UserSchema.pre('save', function (next) {
 });
 
 var User = mongoose.model('User', UserSchema)
+
+// // Example of data passed into User schema
+// {
+// 	email: 'foo@bar.com'
+// 	// will be hashed in the database
+// 	password: 'password123'
+// 	tokens: [{
+// 		access: 'auth',
+// 		// long cryptographic string
+// 		token: 'asldfkjsfdkhzdlfialkkvjmnxczxcv'
+// 	}]
+// }
 
 module.exports = {
 	User

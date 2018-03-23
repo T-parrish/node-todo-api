@@ -41,7 +41,7 @@ const todos = [{
 	_creator: userTwoId
 }];
 
-
+// seeds test database with users data stored in const above
 const populateUsers = (done) => {
 	User.remove({}).then(() => {
 		var userOne = new User(users[0]).save();
@@ -51,6 +51,7 @@ const populateUsers = (done) => {
 	}).then(() => done());
 };
 
+// seeds test database with todos data stored in const above
 const populateTodos = (done) => {
 	Todo.remove({}).then(() => {
 		return Todo.insertMany(todos);

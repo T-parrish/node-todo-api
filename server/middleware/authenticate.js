@@ -1,5 +1,7 @@
 var {User} = require('./../models/user')
 
+
+// Authentication middleware - finds a user by their x-auth header token
 var authenticate = (req, res, next) => {
 	var token = req.header('x-auth');
 
